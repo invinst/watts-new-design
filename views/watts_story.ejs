@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Co-accused Officers in Unit history</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <link type='text/css' rel='stylesheet' href='css/graph.css'/>
+    <link type='text/css' rel='stylesheet' href='css/story.css'/>
+
+    <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js'></script>
+    <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js'></script>
+    <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.2/moment.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="js/lib/d3.tip.v0.6.3.js"></script>
+    <script src="js/lib/jquery.waypoints.min.js"></script>
+    <script src="js/lib/shortcuts/inview.min.js"></script>
+    <script src="js/lib/shortcuts/sticky.min.js"></script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAo40fHRibRB9f7ofa2QDN-CBBtDTuMS0M&sensor=false">
+    </script>
+
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+
+</head>
+<body>
+<h1 class="page-title">%= title
+    %>
+</h1>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="sidenav col-md-4">
+            <div id="timeline">
+                <% _.forEach(obj, function(event) { %>
+                <div class="card" id="<%- 'cr-' + event['to_date'] %>">
+                    <h1><%- event['title'] %></h1>
+                    <%= event['html'] %>
+                </div>
+                <% }); %>
+            </div>
+        </div>
+        <div id="main" class="col-md-8">
+            <div id="chart-container">
+                <div class="row">
+                    <div class="col-md-12">
+                        Current Date: <span id="current-date"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div id='chart'></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id='geo-chart'></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="timeline-template">
+    <% _.forEach(obj, function(event) { %>
+    <div class="card" id="<%- 'cr-' + event['to_date'] %>">
+        <h1><%- event['title'] %></h1>
+        <%= event['html'] %>
+    </div>
+    <% }); %>
+</script>
+
+<script type='text/javascript' src='js/constants.js'></script>
+<script type='text/javascript' src='js/watts_story_timeline.js'></script>
+<script type='text/javascript' src='js/watts_story_graph.js'></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<div class="left-col">
+  <div class="title">Officers Involved
+    (<span class="num-officers"><%- timelineData[0]['UID'] ? timelineData[0]['UID'].length : 0 %></span>)
+  </div>
+  <ul class="involved-officers">
+    <% if(timelineData[0]['UID']) {
+    timelineData[0]['UID'].forEach(function(officerId){
+    %>
+    <li><span class="circle-icon">
+                </span> <%- officerData[officerId] ? officerData[officerId].full_name : ('UnknownID-' + officerId) %>
+    </li>
+    <% })} else { %>
+    <li><span class="circle-icon unknown"></span> Unknown</li>
+    <% } %>
+  </ul>
+</div>
+<div class="right-col">
+
+  <div class="vl"></div>
+  <h4 class="date-title"><%= timelineData[0]['Text Date'] %></h4>
+  <div class="description"><%- timelineData[0]['Content'] %>
+  </div>
+  <a class="report-link <%- timelineData[0]['Documents'] ? '' : 'hide' %>"
+     href='<%- timelineData[0]['Documents'] %>'>
+    <img src="img/ic-pdf.png"
+         srcset="img/ic-pdf@2x.png 2x, img/ic-pdf@3x.png 3x"
+         class="ic-pdf">
+    Investigation Report - Long name Report 2016
+  </a>
+</div>

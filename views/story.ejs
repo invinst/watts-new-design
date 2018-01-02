@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/build/main.bundle.css"/>
+</head>
+<body>
+<!--<h1 style="text-align: center"><%= title %></h1>-->
+
+<div class="main-wrapper" id=<%= pageId %>>
+  <div id='geo-chart'></div>
+  <div id='chart' class="hide"></div>
+  <div id="timeline" class="on-top">
+    <div class="abstract">
+      <div class="logo">
+        T
+        <span class="border"></span>
+      </div>
+      <div class="content">
+        hile both are native South Siders, they grew up in different worlds, on opposite sides of one of the starkest
+        racial boundaries in the city: the bridge over the railroad tracks (and later the Dan Ryan Expressway) that
+        separates the neighborhood of Bridgeport, long the stronghold of the Daley political dynasty, from the. Over
+        the years, they remained on friendly terms. And throughout their careers, they worked the same streets — the
+        2nd District on the South Side — during an era of turbulent change.
+
+        <p>
+          Blond and Irish, Spalding was raised among the many police officers and firefighters who make their homes in
+          Bridgeport. Watts grew up on the other side of the bridge in public housing.
+        </p>
+      </div>
+      <div class="tip">
+        <div class="mouse-icon"><span></span></div>
+        <img src='img/arrows.svg' class='arrow-icon'>
+        Scroll for more
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    <!--<div style="height: 50vh"></div>-->
+    <div class="top-cards-container">
+      <div class="legend">Timeline</div>
+      <div class="clearfix"></div>
+      <div class="top-cards" style="height: 0;">
+        <div class="vl"></div>
+        <% include partials/minicard %>
+      </div>
+    </div>
+
+    <div id="active-card" class="active-card">
+      <% include partials/active_card %>
+    </div>
+
+    <div class="bottom-cards">
+      <div class="vl"></div>
+      <% include partials/minicard %>
+      <div class="clearfix"></div>
+    </div>
+
+    <% for(var i = 0; i < timelineData.length - 1; i++) { %>
+    <hr class="trigger-element" id="<%- "trigger-" + (i + 1) %>" style="top: calc(50vh + <%- (130 * i + 150) %>px);"/>
+    <% } %>
+    <hr style="top: calc(100vh + <%- (130 * timelineData.length + 150) %>px); position: absolute"></hr>
+  </div>
+
+</div>
+</body>
+<script>
+  var data =<%- data %>
+</script>
+<script src="/build/main.bundle.js"></script>
+
+</html>

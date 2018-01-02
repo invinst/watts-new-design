@@ -1,0 +1,85 @@
+@import './variables';
+
+@keyframes blink {
+  50% {
+    stroke: $color-stroke-highlight;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.08);
+  }
+  50% {
+    transform: scale(1);
+  }
+  60% {
+    transform: scale(1);
+  }
+  70% {
+    transform: scale(1.05);
+  }
+  80% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse-me {
+  0% {
+    stroke-width: 1.5px;
+    stroke-opacity: 1;
+  }
+  30% {
+    stroke-width: 1.5px;
+    stroke-opacity: 0.8
+  }
+  40% {
+    stroke-width: 2px;
+    stroke-opacity: 0.2;
+  }
+  50% {
+    stroke-width: 1.5px;
+    stroke-opacity: 0
+  }
+  60% {
+    stroke-width: 1.5px;
+    stroke-opacity: 0.2
+  }
+  70% {
+    stroke-width: 2px;
+    stroke-opacity: 0.4
+  }
+  80% {
+    stroke-width: 1.5px;
+    stroke-opacity: 0.6;
+  }
+  100% {
+    stroke-width: 1.5px;
+    stroke-opacity: 0.8;
+  }
+}
+
+.blink-animation { /*or other element you want*/
+  animation-name: blink;
+  animation-duration: .5s;
+  animation-timing-function: step-end;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+.pulse-animation {
+  animation-name: pulse-me;
+  animation-duration: 2000ms;
+  transform-origin: 70% 70%;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}

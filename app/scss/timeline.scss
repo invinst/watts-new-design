@@ -1,0 +1,369 @@
+@import "./variables";
+
+#timeline {
+  width: 50%;
+  max-width: 651px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  .officer-name, .complaint-id {
+    cursor: pointer;
+    &:hover {
+      //text-decoration: underline;
+      color: $color-red-default !important;
+    }
+  }
+  .complaint-id {
+    color: $color-red-default;
+  }
+
+  .vl {
+    border-left: 2px solid $color-purple-brown;
+    height: 100%;
+    position: fixed;
+
+    right: 155px;
+    margin-left: -1px;
+    z-index: 99;
+    transform: translateY(-15px);
+  }
+
+  .abstract, .top-cards-container, .active-card, .bottom-cards {
+    transition: transform 500ms, bottom 500ms;
+    ul {
+      transition: margin-top 500ms, height 500ms;
+      margin-top: 0;
+
+      &.involved-officers {
+        padding: 0;
+        list-style-type: none;
+        li {
+          display: block;
+
+          list-style: none;
+          padding: 4px 8px;
+          border-radius: 2px;
+          font-size: 14px;
+          color: $color-purple-brown; // TODO: constant later
+
+          .circle-icon {
+            width: 11px;
+            height: 11px;
+            background-color: $color-red-default; // default one
+            display: inline-block;
+            border-radius: 10px;
+            margin-right: 6px;
+            //border: 1px solid $color-red-default;
+            &.unknown {
+              border: 1px solid $color-purple-brown;
+              background-color: unset;
+            }
+          }
+        }
+      }
+      .mini-card {
+        //min-width: 500px;
+        float: right;
+        clear: both;
+        height: 30px;
+        margin-top: 12px;
+        list-style: none;
+        background-color: rgba(255, 255, 255, 0.75);
+        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.17);
+        //transition: top 500ms ease-in;
+        ul.involved-officers {
+          height: 30px;
+          float: right;
+          li {
+            float: right;
+            padding-top: 6px;
+            margin-right: 5px;
+          }
+        }
+        .date-title {
+          //width: 90px;
+          height: 30px;
+          font-size: 14px;
+          font-weight: bold;
+          color: $color-purple-brown;
+          padding-top: 7px;
+
+          float: right;
+          width: 124px;
+          box-sizing: border-box;
+          padding-left: 23px;
+          //border-left: 2px solid $color-purple-brown;
+        }
+        .minus-icon {
+          width: 6px;
+          height: 2px;
+          float: left;
+          background-color: $color-purple-brown;
+          top: 6px;
+          position: relative;
+          left: -25px;
+        }
+      }
+    }
+  }
+
+  .abstract {
+    margin-top: 40px;
+    margin-right: 33px;
+    width: 461px;
+    height: 278px;
+    //float: right;
+    position: fixed;
+    right: 0;
+    .logo {
+      display: block;
+      transition: margin 500ms ease-in;
+      width: 62px;
+      //height: 123px;
+      font-size: 100px;
+      font-weight: 500;
+      color: $color-purple-brown;
+      line-height: 1em;
+      float: left;
+      margin-right: 28px;
+
+      .border {
+        display: block;
+        position: relative;
+        width: 65px;
+        height: 49px;
+        border-color: $color-purple-brown;
+        border-style: solid;
+        border-width: 1px 0 0 1px;
+        margin-top: -106px;
+        margin-left: -11px;
+        float: left;
+      }
+    }
+
+    .content {
+      width: 448px;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: justify;
+      color: $color-purple-brown;
+      visibility: visible;
+      opacity: 1;
+      //transition: visibility 0s linear 0.5s, opacity 0.5s linear;
+      transition-delay: 0.6s;
+    }
+    .tip {
+      margin-left: 90px;
+      display: flex;
+      align-items: center;
+
+      width: 164px;
+      height: 18px;
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: normal;
+      text-align: justify;
+      color: $color-purple-brown;
+      transition: visibility 0s linear 600ms, opacity 600ms linear;
+      visibility: visible;
+      opacity: 1;
+
+      .arrow-icon {
+        height: 15px;
+        transform: rotate(180deg);
+        margin-left: -2px;
+        margin-right: 2px;
+        margin-top: 3px;
+      }
+
+      .mouse-icon {
+        //margin-right: 2px;
+        display: inline-block;
+        width: 12px;
+        height: 19px;
+        border: 1px solid black;
+        border-radius: 10px;
+        span {
+          display: block;
+          width: 1.5px;
+          height: 4px;
+          background-color: black;
+          margin-top: 4px;
+          margin-left: 5.5px;
+        }
+      }
+    }
+
+    &.hidden {
+      position: fixed;
+
+      .content {
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0s, opacity 0.5s linear;
+      }
+      .tip {
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0s linear 500ms, opacity 500ms linear;
+      }
+      .logo {
+        margin-left: 345px;
+      }
+    }
+  }
+
+  .top-cards, .bottom-cards {
+    overflow-y: hidden;
+    margin-right: 33px;
+    ul.involved-officers {
+      max-width: calc(100% - 123px); // todo: calculate later
+      overflow: hidden;
+      display: block;
+      height: 100%;
+    }
+  }
+
+  .top-cards-container {
+    position: fixed;
+    bottom: calc(50vh + 115px);
+    height: auto;
+    right: 0;
+    .legend {
+      width: 137px;
+      height: 18px;
+      font-size: 14px;
+      font-weight: bold;
+      margin-right: 25px;
+      color: $color-purple-brown;
+      float: right;
+      margin-bottom: 21px;
+    }
+    .top-cards {
+      transition: height 500ms;
+      position: static;
+    }
+  }
+
+  .active-card {
+    box-sizing: border-box;
+    z-index: 100;
+    position: fixed;
+    top: calc(50vh - 110px);
+    min-width: 630px;
+    max-height: 236px;
+    min-height: 235px;
+    //background-color: rgba(255, 255, 255, 0.9); // TODO: fix opacity with vertical line
+    background-color: #ffffff;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.17);
+    margin-right: 21px;
+    transition: all 500ms;
+
+    .left-col {
+      display: inline-block;
+      width: 196px;
+      float: left;
+      margin-left: 19px;
+
+      .title {
+        margin-top: 57px;
+        margin-bottom: 24px;
+        height: 22px;
+        border-left: 8px solid #d8d8d8;
+        padding-left: 5px;
+        padding-top: 4px;
+        font-size: 15px;
+        letter-spacing: -0.2px;
+        color: rgba(0, 0, 0, 0.5);
+      }
+
+      ul.involved-officers {
+        li {
+          cursor: pointer;
+          background-color: #eeeeee;
+          float: left;
+          clear: left;
+          margin-bottom: 9px;
+          color: $color-purple-brown;
+          border: 1px solid #eeeeee;
+          &:hover {
+            border-color: #2f292b;
+          }
+          &.officer-name {
+            text-decoration: none;
+          }
+        }
+
+      }
+
+    }
+    .right-col {
+      width: calc(100% - 196px - 40px);
+      display: inline-block;
+      //min-height: 300px;
+      margin-right: 15px;
+
+      .vl {
+        height: 48px;
+      }
+
+      .date-title {
+        height: 30px;
+        font-size: 24px;
+        font-weight: bold;
+        max-width: 279px;
+        color: #2f292b;
+        padding: 17px 0 0;
+        margin: 0 0 12px;
+      }
+      .description {
+        min-height: 122px;
+        font-size: 15px;
+        line-height: 1.27;
+        color: $color-purple-brown;
+        margin-bottom: 9px;
+        .officer-name {
+          color: $color-red-default;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+      .report-link {
+        margin: 3px 0 22px;
+        height: 16px;
+        font-size: 13px;
+        letter-spacing: -0.1px;
+        color: #2f1238;
+        display: flex;
+
+        align-items: center;
+
+        &.hide {
+          display: none;
+        }
+        .ic-pdf {
+          width: 24px;
+          height: 24px;
+          object-fit: contain;
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+
+  .bottom-cards {
+    height: 50vh;
+    bottom: auto;
+    top: calc(50vh + 120px);
+    right: 0;
+    position: fixed;
+    transition: transform 500ms, margin-top 500ms;
+  }
+}
+
+.trigger-element {
+  position: absolute;
+}

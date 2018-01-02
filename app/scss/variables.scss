@@ -1,0 +1,20 @@
+$color-link: #AFAFAF;
+$color-link-highlight: #FF4F5D;
+
+$color-bg-tooltip: #999999;
+$color-bg-timeline: rgba(255, 255, 255, 0.6);
+$color-brown-light: #D1D1D1;
+
+$color-purple-brown: #231f20;
+$color-red-default: #dc3747;
+
+$color-lighter-black: rgba(0,0,0,0.2);
+
+
+$color-stroke-highlight: #ff0000;
+
+$officer-tag-width: 80px;
+$timeline-date-width: 80px;
+$description-width: calc(100% - #{$officer-tag-width} - #{$timeline-date-width} - 30px);
+
+
