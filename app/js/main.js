@@ -1,7 +1,6 @@
 /* global data */
 /* exported google */
 
-
 import GoogleMapsLoader from 'google-maps';
 import { googleKey } from './models/geo_graph.conf';
 import { select, selectAll } from 'd3-selection';
@@ -17,7 +16,6 @@ import * as StoryTimeline from './models/timeline';
 
 
 var google; // eslint-disable-line no-unused-vars
-
 const controller = new ScrollMagic.Controller(); // init controller
 
 if (typeof data !== 'undefined') {
@@ -26,6 +24,8 @@ if (typeof data !== 'undefined') {
   GoogleMapsLoader.KEY = googleKey;
   GoogleMapsLoader.load((gg) => {
     google = gg;
+    select('#timeline').classed('on-startup', false);
+
     window._geoGraph = new GeoGraph(data, 'geo-chart');
 
     // BUILD SCENES
@@ -72,6 +72,7 @@ if (typeof data !== 'undefined') {
           const idx = parseInt(event.target.triggerElement().id.split('-')[1]);
           if (idx === 1 && event.state === 'BEFORE') {
             select('.top-cards').attr('style', 'height: 0;');
+            select('.bottom-cards > ul').attr('style', '');
             StoryTimeline.updateActiveCard(0);
             StoryTimeline.updateGraphs(0);
           }

@@ -22,20 +22,23 @@ export function updateActiveCard(idx) {
   if (uids.length > 0) {
     uids.forEach((d) => {
       const color = activeCardData['color_UID'] ? activeCardData['color_UID'][d] || 'unset' : 'unset';
-      const extraStyle = (color === 'unset') ? ' border: 1px solid #dc3747' : '';
 
       const name = data.graph.officers[d] ? data.graph.officers[d].full_name : `UnknownID-${d}`;
+      const isUnknown = (color === 'unset' || color === 'rgb(0, 0, 0)');
       const element = involvedOfficers.insert('li')
-        .html(`<span class='circle-icon' style='background-color:${color}; ${extraStyle}'></span> ${name}`);
-
+        .classed('unknown', isUnknown)
+        .html(`<span class='circle-icon' ${ !isUnknown && ('style="background-color:' + color + '"') }></span>`
+          + ` ${name}`);
       if (data.graph.officers[d]) {
-        element.attr('class', 'officer-name')
+        element.classed('officer-name', true)
           .attr('officer-id', d);
       }
     });
+    selectAll('.active-card .involved-officers li.unknown').raise(); // make not-found officers go to bottom
   } else {
     involvedOfficers.insert('li')
-      .html('<span class="circle-icon unknown"></span> Unknown');
+      .classed('unknown', true)
+      .html('<span class="circle-icon"></span> Unknown');
   }
 }
 
@@ -79,7 +82,7 @@ export function scrollToCard(idx) {
   updateActiveCard(idx);
   // update bottom margin:
   const cardScrollPixel = 42; // minicard-height: 30, margin: 12px
-  const scrollTop = (idx) * 42;
+  const scrollTop = (idx) * cardScrollPixel;
   const topCard = select('.top-cards');
 
   // TODO: these constant numbers need to be in some files
@@ -104,5 +107,5 @@ export function scrollToCard(idx) {
   }
   select('.bottom-cards')
     .attr('style', `margin-top: ${pushBottomCardPixel + 3}px;`);
-  select('.bottom-cards > ul').attr('style', `margin-top: ${-scrollTop - 3}px;`);
+  select('.bottom-cards > ul').attr('style', `margin-top: ${-scrollTop - cardScrollPixel - 3}px;`);
 }

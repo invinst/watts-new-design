@@ -1,19 +1,20 @@
 <ul>
-  <% for(var i = 0; i < timelineData.length - 1; i++) { %>
+  <% for(var i = 0; i < timelineData.length; i++) { %>
   <li class="mini-card">
     <div class="date-title"><span class="minus-icon"></span><%- timelineData[i]['Text Date'] %></div>
     <ul class="involved-officers">
       <% if(timelineData[i]['UID']) {
       timelineData[i]['UID'].forEach(function(officerId){
         const color = timelineData[i]['color_UID'] ? timelineData[i]['color_UID'][officerId] || 'unset' : 'unset';
-        const extraStyle = (color === 'unset') ? ' border: 1px solid #dc3747' : ''
+        // const extraStyle = (color === 'unset') ? ' border: 1px solid #dc3747' : ''
+        const isUnknown = (color === 'unset' || color === 'rgb(0, 0, 0)');
       %>
-      <li class="officer-name" officer-id="<%- officerId %>">
-        <span class="circle-icon" style="background-color: <%- color %>;<%- extraStyle %>"></span>
+      <li class="officer-name <%- isUnknown ? 'unknown' : '' %>" officer-id="<%- officerId %>">
+        <span class="circle-icon" style="<%- !isUnknown ? 'background-color:' + color : '' %>"></span>
         <%- officerData[officerId] ? officerData[officerId].full_name : ('UnknownID-' + officerId) %>
       </li>
       <% })} else { %>
-      <li><span class="circle-icon unknown"></span> Unknown</li>
+      <li class="unknown"><span class="circle-icon"></span> Unknown</li>
       <% } %>
     </ul>
   </li>

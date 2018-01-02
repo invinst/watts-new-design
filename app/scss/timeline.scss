@@ -7,6 +7,12 @@
   position: absolute;
   top: 0;
   right: 0;
+  transition: opacity 500ms;
+  opacity: 1;
+
+  &.on-startup{
+    opacity: 0.2;
+  }
 
   .officer-name, .complaint-id {
     cursor: pointer;
@@ -51,13 +57,14 @@
           .circle-icon {
             width: 11px;
             height: 11px;
-            background-color: $color-red-default; // default one
+            //background-color: $color-red-default; // default one
             display: inline-block;
             border-radius: 10px;
             margin-right: 6px;
-            //border: 1px solid $color-red-default;
-            &.unknown {
-              border: 1px solid $color-purple-brown;
+          }
+          &.unknown {
+            .circle-icon {
+              border: 1px solid $color-red-default;
               background-color: unset;
             }
           }
@@ -80,6 +87,9 @@
             float: right;
             padding-top: 6px;
             margin-right: 5px;
+          }
+          &.not-found {
+            border: 1px solid #dc3747;
           }
         }
         .date-title {
@@ -361,6 +371,9 @@
     right: 0;
     position: fixed;
     transition: transform 500ms, margin-top 500ms;
+    > ul {
+      margin-top: -42px;
+    }
   }
 }
 
