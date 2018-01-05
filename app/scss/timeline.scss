@@ -10,14 +10,13 @@
   transition: opacity 500ms;
   opacity: 1;
 
-  &.on-startup{
+  &.on-startup {
     opacity: 0.2;
   }
 
   .officer-name, .complaint-id {
     cursor: pointer;
     &:hover {
-      //text-decoration: underline;
       color: $color-red-default !important;
     }
   }
@@ -26,7 +25,7 @@
   }
 
   .vl {
-    border-left: 2px solid $color-purple-brown;
+    border-left: 1px solid $color-purple-brown;
     height: 100%;
     position: fixed;
 
@@ -47,31 +46,31 @@
         list-style-type: none;
         li {
           display: block;
+          text-transform: capitalize;
 
           list-style: none;
           padding: 4px 8px;
           border-radius: 2px;
           font-size: 14px;
-          color: $color-purple-brown; // TODO: constant later
+          color: $color-purple-brown;
 
           .circle-icon {
             width: 11px;
             height: 11px;
-            //background-color: $color-red-default; // default one
             display: inline-block;
             border-radius: 10px;
             margin-right: 6px;
           }
           &.unknown {
             .circle-icon {
-              border: 1px solid $color-red-default;
-              background-color: unset;
+              //border: 1px solid $color-red-default;
+              //background-color: unset;
+              background-color: #d8d8d8;
             }
           }
         }
       }
       .mini-card {
-        //min-width: 500px;
         float: right;
         clear: both;
         height: 30px;
@@ -79,7 +78,6 @@
         list-style: none;
         background-color: rgba(255, 255, 255, 0.75);
         box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.17);
-        //transition: top 500ms ease-in;
         ul.involved-officers {
           height: 30px;
           float: right;
@@ -87,13 +85,28 @@
             float: right;
             padding-top: 6px;
             margin-right: 5px;
+
+            &.inactive {
+              display: none;
+            }
+            &.more-icon{
+              font-style: italic;
+              font-size: 12px;
+            }
           }
           &.not-found {
             border: 1px solid #dc3747;
           }
         }
+        &:hover{
+          li.inactive{
+            display: block !important;
+          }
+          .more-icon{
+            display: none !important;
+          }
+        }
         .date-title {
-          //width: 90px;
           height: 30px;
           font-size: 14px;
           font-weight: bold;
@@ -104,7 +117,6 @@
           width: 124px;
           box-sizing: border-box;
           padding-left: 23px;
-          //border-left: 2px solid $color-purple-brown;
         }
         .minus-icon {
           width: 6px;
@@ -124,14 +136,12 @@
     margin-right: 33px;
     width: 461px;
     height: 278px;
-    //float: right;
     position: fixed;
     right: 0;
     .logo {
       display: block;
       transition: margin 500ms ease-in;
       width: 62px;
-      //height: 123px;
       font-size: 100px;
       font-weight: 500;
       color: $color-purple-brown;
@@ -161,7 +171,6 @@
       color: $color-purple-brown;
       visibility: visible;
       opacity: 1;
-      //transition: visibility 0s linear 0.5s, opacity 0.5s linear;
       transition-delay: 0.6s;
     }
     .tip {
@@ -189,7 +198,6 @@
       }
 
       .mouse-icon {
-        //margin-right: 2px;
         display: inline-block;
         width: 12px;
         height: 19px;
@@ -220,7 +228,7 @@
         transition: visibility 0s linear 500ms, opacity 500ms linear;
       }
       .logo {
-        margin-left: 345px;
+        //margin-left: F;
       }
     }
   }
@@ -291,6 +299,7 @@
 
       ul.involved-officers {
         li {
+          //text-transform: capitalize;
           cursor: pointer;
           background-color: #eeeeee;
           float: left;
@@ -312,13 +321,11 @@
     .right-col {
       width: calc(100% - 196px - 40px);
       display: inline-block;
-      //min-height: 300px;
       margin-right: 15px;
 
       .vl {
         height: 48px;
       }
-
       .date-title {
         height: 30px;
         font-size: 24px;
@@ -348,7 +355,6 @@
         letter-spacing: -0.1px;
         color: #2f1238;
         display: flex;
-
         align-items: center;
 
         &.hide {

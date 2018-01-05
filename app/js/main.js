@@ -9,6 +9,7 @@ import ScrollMagic from 'scrollmagic/scrollmagic/uncompressed/ScrollMagic';
 import 'scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap';
 import 'scrollmagic/scrollmagic/uncompressed/plugins/debug.addIndicators';
 import TimelineLite from 'gsap/src/uncompressed/TimelineLite';
+import TweenMax from 'gsap/src/uncompressed/TweenMax';
 
 import SocialGraph from './models/social_graph';
 import GeoGraph from './models/geo_graph';
@@ -28,10 +29,15 @@ if (typeof data !== 'undefined') {
 
     window._geoGraph = new GeoGraph(data, 'geo-chart');
 
-    // BUILD SCENES
+    // BUILD SCENES FOR TIMELINE
+    // 1. HEADER SCENCE
+    // const totalHeight = select('#timeline').node().scrollHeight;
+    const totalScroll = (data.numScene + 1) * 130;
+    const tween = TweenMax.to('.abstract .logo', 0.5, { 'margin-left': '345px' });
     new ScrollMagic.Scene({
       triggerElement: '#timeline',
       offset: 100,
+      duration: totalScroll,
       triggerHook: 'onLeave'
     }).on('add', function (event) {
       StoryTimeline.fixSmallHeightWindow();
@@ -44,11 +50,14 @@ if (typeof data !== 'undefined') {
       StoryTimeline.fixSmallHeightWindow();
       select('#chart').classed('hide', true);
     })
-    // .addIndicators({ name: `(duration: 150)` }) // add indicators (requires plugin)
+      .setTween(tween)
+      .addIndicators({ name: 'Change header' })
       .addTo(controller);
 
 
+    // 2. STORY (ACTIVE-CARD) SCENES
     for (let i = 0; i < data.numScene - 1; i++) {
+
       new ScrollMagic.Scene({
         triggerElement: '#trigger-' + (i + 1),
         offset: 0,
@@ -63,10 +72,6 @@ if (typeof data !== 'undefined') {
           let tl = new TimelineLite();
           tl.fromTo('.active-card .description, .active-card .date-title', 0.5, { opacity: 0 }, { opacity: 1 })
             .staggerFrom('.active-card .involved-officers li', 0.5, { scale: 0, autoAlpha: 0 }, 0.2, '-=0.25');
-
-          // tl.from('.active-card .description', 0.5, { autoAlpha: 0 })
-          //   .staggerFrom('.active-card .involved-officers li', 0.5, { scale: 0, autoAlpha: 0 }, 0.2);
-          tl.play();
         })
         .on('leave', function (event) {
           const idx = parseInt(event.target.triggerElement().id.split('-')[1]);
@@ -78,11 +83,10 @@ if (typeof data !== 'undefined') {
           }
         })
         .addTo(controller);
-      // scenes.push(scene);
     }
   });
 
-  // embed event
+  // EMBED MOUSE EVENT HIGHLIGHT NODES IN SPECIFIC TEXT
   selectAll('.officer-name')
     .on('mouseover', function () {
       const officerId = this.getAttributeNode('officer-id').value;

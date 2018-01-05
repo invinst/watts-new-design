@@ -2,18 +2,21 @@ import _ from 'lodash';
 import { xml as readXML } from 'd3';
 import { select, selectAll } from 'd3-selection';
 import * as d3Force from 'd3-force';
-import { scaleLinear } from 'd3-scale';
+import { scaleLinear, scaleQuantize } from 'd3-scale';
 import d3tip from 'd3-tip';
 import moment from 'moment';
+
 import Graph from './graph';
+import Vector2D from './vector';
 
 
 export default class SocialGraph extends Graph {
   constructor(data, elementId) {
     super(data, elementId);
 
-    this.width = 400;
-    this.height = 400;
+    this.colorRange = ['#F3C2C2', '#FF4F5D', '#FF0006', '#D40003', '#B10002'];
+    this.width = 500;
+    this.height = 500;
 
     this.maxWeight = 0;
     this.linkedByIndex = {};
@@ -28,14 +31,18 @@ export default class SocialGraph extends Graph {
 
     this._fill = scaleLinear()
       .domain([0, 40])
-      .range(['#F3C2C2', '#FF4F5D', '#FF0006', '#D40003', '#B10002']);
+      .range(this.colorRange);
+
+    this._scaleWidth = scaleQuantize()
+      .domain([0, 15])
+      .range([1, 2, 3, 4]);
   }
 
 
   setupGraph() {
     this.graph = d3Force.forceSimulation()
       .velocityDecay(0.9)
-      .force('charge', d3Force.forceManyBody().strength(-800).distanceMin(100).distanceMax(400))
+      .force('charge', d3Force.forceManyBody().strength(-800).distanceMin(100).distanceMax(500))
       .force('collide', d3Force.forceCollide((d) => d.r + 8).iterations(16))
       .force('center', d3Force.forceCenter(this.width / 2, this.height / 2))
       .force('y', d3Force.forceY(0.001))
@@ -63,6 +70,9 @@ export default class SocialGraph extends Graph {
       });
     }
 
+
+    this.svgDef = this.svg.append('defs');
+
     this.node = this.svg.selectAll('.node');
     this.link = this.svg.selectAll('.link');
   }
@@ -70,8 +80,8 @@ export default class SocialGraph extends Graph {
   setupToolTip() {
     this.tip = d3tip()
       .attr('class', 'd3-tip')
-      .offset([-5, 0])
-      .html((d) => `<span> ${d.full_name} (${d.uid}) </span>`);
+      .offset([-8, 0])
+      .html((d) => `<span> ${_.startCase(_.toLower(d.full_name))}</span>`);
     this.svg.call(this.tip);
   }
 
@@ -94,11 +104,35 @@ export default class SocialGraph extends Graph {
       return `${ids[0]}-${ids[1]}`;
     });
     this.link.exit().remove();
-    this.link = this.link.enter().insert('line', '.node')
+    this.svgDef.selectAll('linearGradient').remove(); // TODO: dynamically add linearGradient
+
+    this.link = this.link.enter()
+      .insert('path', '.node')
+      // .insert('line', '.node')
       .attr('class', 'link')
       .merge(this.link)
-      .attr('stroke-width', (d) => Math.ceil(Math.sqrt(d.weight)))
-      .classed('highlight', (d) => d.highlight);
+      // .attr('stroke-width', (d) => Math.ceil(Math.sqrt(d.weight)))
+      .classed('highlight', (d) => d.highlight)
+      .each((d) => {
+        const ids = [d.source.id, d.target.id].sort();
+        let gradient = this.svgDef.append('linearGradient')
+          .attr('id', `gradient-${ids[0]}-${ids[1]}`)
+          .attr('spreadMethod', 'pad');
+
+        gradient.append('stop')
+          .attr('offset', '0%')
+          .attr('stop-color', this._fill(d.source.numComplaints))
+          .attr('stop-opacity', 1);
+
+        gradient.append('stop')
+          .attr('offset', '100%')
+          .attr('stop-color', this._fill(d.target.numComplaints))
+          .attr('stop-opacity', 1);
+      })
+      .attr('fill', (d) => {
+        const ids = [d.source.id, d.target.id].sort();
+        return `url(#gradient-${ids[0]}-${ids[1]})`;
+      });
   }
 
   updateNodes(newNodes) {
@@ -111,11 +145,11 @@ export default class SocialGraph extends Graph {
     const enteringNodes = joinData.enter()
       .insert('g', '.cursor')
       .attr('class', 'node')
-      .attr('id', (d) =>'officer-' + d.uid);
+      .attr('id', (d) => 'officer-' + d.uid);
     enteringNodes.append('text')
       .attr('x', 12)
       .attr('dy', '0.35em')
-      .text((d) =>d.full_name.split(/\s+/)[0]);
+      .text((d) => d.full_name.split(/\s+/)[0]);
 
     let nodeIcons;
     if (this.optionCustomNode) {
@@ -157,11 +191,13 @@ export default class SocialGraph extends Graph {
         .selectAll('use')
         .attr('transform', (d) => `scale(${d.degree / 2 + 1})`);
     } else {
-      this.node.selectAll('circle').attr('cx', (d) => {
-        return d.x = Math.max(radius, Math.min(this.width - radius, d.x));
-      }).attr('cy', (d) => {
-        return d.y = Math.max(radius, Math.min(this.height - radius, d.y));
-      });
+      this.node.selectAll('circle')
+        .attr('cx', (d) => {
+          return d.x = Math.max(radius, Math.min(this.width - radius, d.x));
+        })
+        .attr('cy', (d) => {
+          return d.y = Math.max(radius, Math.min(this.height - radius, d.y));
+        });
       this.node.selectAll('text').attr('transform', (d) => `translate(${d.x} ,${d.y})`);
     }
 
@@ -170,6 +206,39 @@ export default class SocialGraph extends Graph {
       .attr('y1', (d) => d.source.y)
       .attr('x2', (d) => d.target.x)
       .attr('y2', (d) => d.target.y);
+
+    this.link
+      .attr('d', (d) => {
+        const radius = this._scaleWidth(d.weight);
+
+        const linkVector = new Vector2D(d.target.x - d.source.x, d.target.y - d.source.y).getUnitVector();
+        // const perpVector = linkVector.perpendicularClockwise().scale(radius);
+        const gradientVector = linkVector.scale(0.5);
+
+        //console.debug(JSON.stringify(gradientVector));
+        const ids = [d.source.id, d.target.id].sort();
+        select(`#gradient-${ids[0]}-${ids[1]}`)
+          .attr('x1', 0.5 - gradientVector.X)
+          .attr('y1', 0.5 - gradientVector.Y)
+          .attr('x2', 0.5 + gradientVector.X)
+          .attr('y2', 0.5 + gradientVector.Y);
+        const sourceDelta = radius / 2;
+        const targetDelta = radius / 2;
+
+
+        if ((d.target.x > d.source.x && d.target.y < d.source.y)
+          || (d.target.x < d.source.x && d.target.y > d.source.y)) {
+          return 'M' + (d.source.x - sourceDelta) + ',' + (d.source.y - sourceDelta)
+            + ' L' + (d.target.x - targetDelta) + ',' + (d.target.y - targetDelta)
+            + ' L' + (d.target.x + targetDelta) + ',' + (d.target.y + targetDelta)
+            + ' L' + (d.source.x + sourceDelta) + ',' + (d.source.y + sourceDelta) + ' Z';
+        } else {
+          return 'M' + (d.source.x - sourceDelta) + ',' + (d.source.y + sourceDelta)
+            + ' L' + (d.target.x - targetDelta) + ',' + (d.target.y + targetDelta)
+            + ' L' + (d.target.x + targetDelta) + ',' + (d.target.y - targetDelta)
+            + ' L' + (d.source.x + sourceDelta) + ',' + (d.source.y - sourceDelta) + ' Z';
+        }
+      });
 
   }
 
@@ -280,7 +349,8 @@ export default class SocialGraph extends Graph {
   }
 
   _highlightCirclesAndTexts(target, toggle) {
-    target.selectAll('circle').classed('blink-animation', toggle);
+    target.selectAll('circle').classed('pulse-animation', toggle);
     target.selectAll('text').classed('active', toggle);
+    // target.selectAll('text').classed('hide', toggle);
   }
 }

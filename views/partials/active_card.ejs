@@ -7,7 +7,7 @@
     timelineData[0]['UID'].forEach(function(officerId){
     %>
     <li><span class="circle-icon">
-                </span> <%- officerData[officerId] ? officerData[officerId].full_name : ('UnknownID-' + officerId) %>
+      </span> <%- officerData[officerId] ? officerData[officerId].full_name.toLowerCase() : ('UnknownID-' + officerId) %>
     </li>
     <% })} else { %>
     <li class="unknown"><span class="circle-icon"></span> Unknown</li>
@@ -25,6 +25,6 @@
     <img src="img/ic-pdf.png"
          srcset="img/ic-pdf@2x.png 2x, img/ic-pdf@3x.png 3x"
          class="ic-pdf">
-    Investigation Report - Long name Report 2016
+    Investigation Documents
   </a>
 </div>

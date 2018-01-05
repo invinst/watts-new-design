@@ -2,7 +2,8 @@
 
 @keyframes blink {
   50% {
-    stroke: $color-stroke-highlight;
+    //stroke: $color-stroke-highlight;
+    stroke: white;
   }
 }
 
@@ -77,6 +78,8 @@
 }
 
 .pulse-animation {
+  //stroke: #FF6347;
+  stroke: white;
   animation-name: pulse-me;
   animation-duration: 2000ms;
   transform-origin: 70% 70%;

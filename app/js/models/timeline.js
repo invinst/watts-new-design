@@ -2,18 +2,7 @@
 import { select, selectAll } from 'd3-selection';
 
 
-export function updateActiveCard(idx) {
-  if (idx < 0 || idx >= data.timelineData.length)
-    return;
-
-  const activeCardData = data.timelineData[idx];
-  select('.active-card .description').html(activeCardData['Content']);
-  select('.active-card .date-title').text(activeCardData['Text Date']);
-  select('.active-card .report-link')
-    .classed('hide', !activeCardData['Documents'])
-    .attr('href', activeCardData['Documents']);
-
-
+function updateOfficersListInActiveCard(activeCardData) {
   const involvedOfficers = select('.active-card .left-col .involved-officers');
   const uids = activeCardData['UID'] || [];
 
@@ -23,7 +12,7 @@ export function updateActiveCard(idx) {
     uids.forEach((d) => {
       const color = activeCardData['color_UID'] ? activeCardData['color_UID'][d] || 'unset' : 'unset';
 
-      const name = data.graph.officers[d] ? data.graph.officers[d].full_name : `UnknownID-${d}`;
+      const name = data.graph.officers[d] ? data.graph.officers[d].full_name.toLowerCase() : `UnknownID-${d}`;
       const isUnknown = (color === 'unset' || color === 'rgb(0, 0, 0)');
       const element = involvedOfficers.insert('li')
         .classed('unknown', isUnknown)
@@ -40,6 +29,19 @@ export function updateActiveCard(idx) {
       .classed('unknown', true)
       .html('<span class="circle-icon"></span> Unknown');
   }
+}
+
+export function updateActiveCard(idx) {
+  if (idx < 0 || idx >= data.timelineData.length) return;
+
+  const activeCardData = data.timelineData[idx];
+  select('.active-card .description').html(activeCardData['Content']);
+  select('.active-card .date-title').text(activeCardData['Text Date']);
+  select('.active-card .report-link')
+    .classed('hide', !activeCardData['Documents'])
+    .attr('href', activeCardData['Documents']);
+
+  updateOfficersListInActiveCard(activeCardData);
 }
 
 export function updateGraphs(idx) {
@@ -78,15 +80,17 @@ export function fixSmallHeightWindow(toggle = true) {
 
 export function scrollToCard(idx) {
 
+  const cardScrollPixel = 42; // minicard-height: 30, margin: 12px
+  const defaultHeightActiveCard = 235;
+  const defaultPadding = 3;
+  const scrollTop = (idx) * cardScrollPixel;
+
   // need to update content of Active Card so that Bottom card has height and margin
   updateActiveCard(idx);
-  // update bottom margin:
-  const cardScrollPixel = 42; // minicard-height: 30, margin: 12px
-  const scrollTop = (idx) * cardScrollPixel;
+
   const topCard = select('.top-cards');
 
   // TODO: these constant numbers need to be in some files
-  // TODO: so that scss and js files are able to access to same files
   // 120 = half height of active-card, 140 = height to top
   const numCardShowOnTop = Math.floor((window.innerHeight / 2 - 120 - 140) / cardScrollPixel);
   const maxHeightTop = numCardShowOnTop * cardScrollPixel;
@@ -97,15 +101,12 @@ export function scrollToCard(idx) {
 
   if (idx >= numCardShowOnTop)
     select('.top-cards > ul')
-      .attr('style', `margin-top: -${scrollTop - numCardShowOnTop * cardScrollPixel + 3}px;`);
+      .attr('style', `margin-top: -${scrollTop - numCardShowOnTop * cardScrollPixel + defaultPadding}px;`);
 
-  const pushBottomCardPixel = select('.active-card').node().scrollHeight - 235; // 235=default height active-card
-  if (pushBottomCardPixel > 0) {
-    select('.active-card').attr('style', 'max-height: 800px'); // transition height
-  } else {
-    select('.active-card').attr('style', 'max-height: 235px;');
-  }
+  const pushBottomCardPixel = select('.active-card').node().scrollHeight - defaultHeightActiveCard;
+  select('.active-card').attr('style', `max-height: ${(pushBottomCardPixel > 0) ? 800 : defaultHeightActiveCard}px`);
+
   select('.bottom-cards')
-    .attr('style', `margin-top: ${pushBottomCardPixel + 3}px;`);
-  select('.bottom-cards > ul').attr('style', `margin-top: ${-scrollTop - cardScrollPixel - 3}px;`);
+    .attr('style', `margin-top: ${pushBottomCardPixel + defaultPadding}px;`);
+  select('.bottom-cards > ul').attr('style', `margin-top: ${-scrollTop - cardScrollPixel - defaultPadding}px;`);
 }

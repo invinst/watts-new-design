@@ -3,11 +3,11 @@
 @import './variables';
 @import './animation';
 
-
 body, html {
   height: 100%;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  color: $color-purple-brown;
 }
 
 .main-wrapper {
@@ -25,27 +25,34 @@ body, html {
 
 * html .clearfix {
   zoom: 1;
-}  /* IE6 */
-*:first-child + html .clearfix {
-  zoom: 1;
-}  /* IE7 */
-
-
-
-.d3-tip {
-  line-height: 1;
-  padding: 8px;
-  background-color: $color-bg-tooltip;
-  border-radius: 8px;
-
-  span, p {
-    color: white
-  }
 }
 
-#geo-chart, #chart {
-  circle {
-    stroke: white;
+/* IE6 */
+*:first-child + html .clearfix {
+  zoom: 1;
+}
+
+/* IE7 */
+
+.d3-tip {
+  //line-height: 1;
+  //border-radius: 8px;
+  padding: 4px 8px;
+  background-color: $color-bg-tooltip;
+
+  box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.16);
+
+  span, p {
+    font-size: 14px;
+    text-transform: capitalize;
+  }
+  &:after{
+    border: 4px solid transparent;
+    border-top: 4px solid $color-bg-tooltip;
+    bottom: -8px;
+    content: "";
+    left: calc(50% - 4px);
+    position: absolute;
   }
 }
 
@@ -58,6 +65,7 @@ body, html {
   top: 0;
   left: 0;
   .gnode {
+    stroke: white;
     &.before-complaint {
       circle {
         fill: #379dff;
@@ -75,46 +83,53 @@ body, html {
         fill: none;
         stroke: $color-lighter-black;
       }
-
     }
   }
 }
 
 #chart {
-  transition: visibility 0s linear 0ms ,opacity 500ms;
+  transition: visibility 0s linear 0ms, opacity 500ms;
   opacity: 1;
   visibility: visible;
   position: fixed;
   right: 515px;
   top: 5px;
   margin-right: 50px;
-  min-width: 400px;
-  max-width: 500px;
+  min-width: 500px;
+  max-width: 550px;
 
-  &.hide{
-    transition: visibility 0s linear 500ms ,opacity 500ms;
+  &.hide {
+    transition: visibility 0s linear 500ms, opacity 500ms;
     opacity: 0;
     visibility: hidden;
   }
 
-  line.link {
-    stroke: $color-link;
-    &.highlight {
-      stroke: $color-link-highlight;
-    }
-  }
+  //line.link {
+  //  stroke: $color-link;
+  //  &.highlight {
+  //    stroke: $color-link-highlight;
+  //  }
+  //}
 
   .node {
     text {
+      visibility: hidden;
+      opacity: 0;
       font-size: 6px !important;
-      transition: color 2s, font-size 1s;;
+      transition: visibility 0s linear 0ms, opacity 500ms, font-size 1s;;
       &.active {
+        //transition: visibility 0s linear 500ms, opacity 500ms;
         font-size: 12px !important;
-        fill: red;
+        font-weight: bold;
+        visibility: visible;
+        opacity: 1;
+        //fill: #231f20;
       }
+    }
+    circle {
+      box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.16);
     }
   }
 }
-
 
 @import './timeline';

@@ -35,8 +35,7 @@ function renderTimelineStory(res, pageId) {
           const dates = Object.keys(jsonObject.graph.updating_by_date.officer_complaints).sort();
 
           // calculate the color of node
-          const recentDate = _.findLast(dates,
-            (d) => (d <= res['complaint_date']));
+          const recentDate = _.findLast(dates, (d) => (d <= res['complaint_date']));
           if (recentDate) {
             res['color_UID'] = _.reduce(res['UID'], function (acc, n) {
               acc[n] = colorFunction(jsonObject.graph.updating_by_date.officer_complaints[recentDate][n]);
@@ -47,7 +46,6 @@ function renderTimelineStory(res, pageId) {
         return res;
       });
 
-      // timelineData['officerData'] = officerData;
       const strJson = JSON.stringify(
         Object.assign({},
           jsonObject,
