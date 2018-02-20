@@ -72,6 +72,7 @@ export default class GeoGraph extends Graph {
           .attr('id', 'gvis')
           .attr('width', w)
           .attr('height', h)
+          .style('transform', 'translate(-50vw, -50vh)')
           .call(this.tip);
         this.drawAllNodes();
         this.updateComplaintGraph();
@@ -116,7 +117,7 @@ export default class GeoGraph extends Graph {
     this.node = this.node.enter()
       .append('g')
       .attr('id', (d) => 'complaint-' + d.cr_id)
-      .attr('transform', (d) => this._transform(d))
+      .style('transform', (d) => this._transform(d))
       .attr('class', 'gnode after-complaint')
       .merge(this.node);
 
@@ -142,7 +143,8 @@ export default class GeoGraph extends Graph {
     p = this.overlay.getProjection().fromLatLngToDivPixel(p);
     p.x = p.x - padding;
     p.y = p.y - padding;
-    return 'translate(' + p.x + ',' + p.y + ')';
+    // console.warn('translate(calc(' + p.x + 'px + 50vw), calc(' + p.y + '+50vh))' )
+    return 'translate(calc(' + p.x + 'px + 50vw), calc(' + p.y + 'px + 50vh))';
   }
 
   recalculateValidComplaints() {
